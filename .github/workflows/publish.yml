@@ -1,0 +1,32 @@
+name: Publish WASM release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Download artifact
+      id: download-artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.MORTBOPET_GITHUB_IO_READ_TOKEN}}
+        workflow: wasm-release.yml
+        branch: master
+        name: Release_wasm
+
+    - name: Commit and push changes
+      run: |
+        git add Ripes.js qtloader.js Ripes.wasm Ripes.worker.js
+        git commit -m "Update wasm release"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.MORTBOPET_GITHUB_IO_WRITE_TOKEN }}
