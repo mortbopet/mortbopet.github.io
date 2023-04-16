@@ -22,9 +22,12 @@ jobs:
         workflow: wasm-release.yml
         branch: master
         name: Release_wasm
+        repo: mortbopet/Ripes
 
     - name: Commit and push changes
       run: |
+        git config --global user.email "CI@github.com"
+        git config --global user.name "CI"
         git add Ripes.js qtloader.js Ripes.wasm Ripes.worker.js
         git commit -m "Update wasm release"
         git push
