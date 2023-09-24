@@ -24,12 +24,20 @@ jobs:
         name: Release_wasm
         repo: mortbopet/Ripes
 
-    - name: Commit and push changes
+    - name: Commit and push if changed
       run: |
-        git config --global user.email "CI@github.com"
-        git config --global user.name "CI"
-        git add Ripes.js qtloader.js Ripes.wasm Ripes.worker.js
-        git commit -m "Update wasm release"
-        git push
+        # Check if files have changed
+        DIFF=$(git diff --name-only)
+
+        if [ "$DIFF" != "" ]; then
+          echo "Changes to wasm release detected, pushing..."
+          git config --global user.email "CI@github.com"
+          git config --global user.name "CI"
+          git add Ripes.js qtloader.js Ripes.wasm Ripes.worker.js
+          git commit -m "Update wasm release"
+          git push
+        else
+          echo "No changes to wasm release"
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.MORTBOPET_GITHUB_IO_WRITE_TOKEN }}
